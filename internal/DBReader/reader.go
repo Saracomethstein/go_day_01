@@ -7,10 +7,20 @@ import (
 	"os"
 )
 
+type RecipeFile struct {
+	Cakes []Recipe `json:"cake"`
+}
+
 type Recipe struct {
-	Name        string   `json:"name" xml:"name"`
-	Ingredients []string `json:"ingredients" xml:"ingredients>ingredient"`
-	Time        int      `json:"stovetime" xml:"time"`
+	Name        string       `json:"name" xml:"name"`
+	Time        string       `json:"time" xml:"time"`
+	Ingredients []Ingredient `json:"ingredients" xml:"ingredients>ingredient"`
+}
+
+type Ingredient struct {
+	Name  string `json:"ingredient_name" xml:"ingredient_name"`
+	Count string `json:"ingredient_count" xml:"ingredient_count"`
+	Unit  string `json:"ingredient_unit,omitempty" xml:"ingredient_unit,omitempty"`
 }
 
 type DBReader interface {
@@ -28,10 +38,14 @@ func (r JSONReader) Read(filename string) ([]Recipe, error) {
 	}
 	defer file.Close()
 
-	var recipes []Recipe
-	err = json.NewDecoder(file).Decode(&recipes)
+	var recipeFile RecipeFile
+	err = json.NewDecoder(file).Decode(&recipeFile)
 
-	return recipes, err
+	if err != nil {
+		return nil, err
+	}
+
+	return recipeFile.Cakes, nil
 }
 
 func (r XMLReader) Read(filename string) ([]Recipe, error) {

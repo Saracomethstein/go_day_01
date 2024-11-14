@@ -1,25 +1,23 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"os"
-	"path/filepath"
-	"strings"
 
 	dbreader "github.com/Saracomethstein/go_day_01/internal/DBReader"
+	file "github.com/Saracomethstein/go_day_01/internal/common"
 )
 
 func main() {
 	var reader dbreader.DBReader
 
-	filename, err := getFile()
+	filename, err := file.GetName()
 	if err != nil {
 		fmt.Printf("Error: %s\n", err)
 		os.Exit(1)
 	}
 
-	format, err := getFileFormat(filename)
+	format, err := file.GetFormat(filename)
 	if err != nil {
 		fmt.Printf("Error: %s\n", err)
 		os.Exit(1)
@@ -39,32 +37,5 @@ func main() {
 
 	if err := dbreader.PrintRecipes(recipes, format); err != nil {
 		fmt.Println("Error printing recipes:", err)
-	}
-}
-
-func getFile() (string, error) {
-	filename := flag.String("f", "", "path to the data base file")
-	flag.Parse()
-
-	if *filename == "" {
-		return "", fmt.Errorf("please provide a file path with -f flag")
-	}
-
-	if _, err := os.Stat(*filename); os.IsNotExist(err) {
-		return "", fmt.Errorf("file dose not exist: %s", *filename)
-	}
-
-	return *filename, nil
-}
-
-func getFileFormat(filename string) (string, error) {
-	ext := strings.ToLower(filepath.Ext(filename))
-	switch ext {
-	case ".json":
-		return "json", nil
-	case ".xml":
-		return "xml", nil
-	default:
-		return "", fmt.Errorf("unknown file format: %s", ext)
 	}
 }

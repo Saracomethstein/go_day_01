@@ -8,19 +8,19 @@ import (
 )
 
 type RecipeFile struct {
-	Cakes []Recipe `json:"cake"`
+	Cakes []Recipe `json:"cake" xml:"cake"`
 }
 
 type Recipe struct {
 	Name        string       `json:"name" xml:"name"`
-	Time        string       `json:"time" xml:"time"`
-	Ingredients []Ingredient `json:"ingredients" xml:"ingredients>ingredient"`
+	Time        string       `json:"time" xml:"stovetime"`
+	Ingredients []Ingredient `json:"ingredients" xml:"ingredients>item"`
 }
 
 type Ingredient struct {
-	Name  string `json:"ingredient_name" xml:"ingredient_name"`
-	Count string `json:"ingredient_count" xml:"ingredient_count"`
-	Unit  string `json:"ingredient_unit,omitempty" xml:"ingredient_unit,omitempty"`
+	Name  string `json:"ingredient_name" xml:"itemname"`
+	Count string `json:"ingredient_count" xml:"itemcount"`
+	Unit  string `json:"ingredient_unit,omitempty" xml:"itemunit,omitempty"`
 }
 
 type DBReader interface {
@@ -28,7 +28,6 @@ type DBReader interface {
 }
 
 type JSONReader struct{}
-
 type XMLReader struct{}
 
 func (r JSONReader) Read(filename string) ([]Recipe, error) {
@@ -55,25 +54,27 @@ func (r XMLReader) Read(filename string) ([]Recipe, error) {
 	}
 	defer file.Close()
 
-	var recipes []Recipe
-	err = xml.NewDecoder(file).Decode(&recipes)
+	var recipeFile RecipeFile
+	err = xml.NewDecoder(file).Decode(&recipeFile)
 
-	return recipes, err
+	return recipeFile.Cakes, err
 }
 
 func PrintRecipes(recipes []Recipe, format string) error {
-	var data []byte
+	var output []byte
 	var err error
+
+	recipeFile := RecipeFile{Cakes: recipes}
 	if format == "json" {
-		data, err = json.MarshalIndent(recipes, "", "    ")
+		output, err = json.MarshalIndent(recipeFile, "", "    ")
 	} else if format == "xml" {
-		data, err = xml.MarshalIndent(recipes, "", "    ")
-	} else {
-		return fmt.Errorf("unknown format: %s", format)
+		output, err = xml.MarshalIndent(recipeFile, "", "    ")
 	}
+
 	if err != nil {
 		return err
 	}
-	fmt.Println(string(data))
+
+	fmt.Println(string(output))
 	return nil
 }

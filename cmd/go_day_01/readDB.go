@@ -35,6 +35,8 @@ func main() {
 		return
 	}
 
+	format = file.InvertFormat(format)
+
 	if err := dbreader.PrintRecipes(recipes, format); err != nil {
 		fmt.Println("Error printing recipes:", err)
 	}

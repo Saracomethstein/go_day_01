@@ -34,3 +34,10 @@ func GetFormat(filename string) (string, error) {
 		return "", fmt.Errorf("unknown file format: %s", ext)
 	}
 }
+
+func InvertFormat(format string) string {
+	if format == "json" {
+		return "xml"
+	}
+	return "json"
+}

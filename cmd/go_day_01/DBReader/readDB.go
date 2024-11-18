@@ -9,20 +9,16 @@ import (
 )
 
 func main() {
-	filename, format, err := file.GetInfo()
+	filename, err := file.GetInfo()
 	if err != nil {
 		fmt.Printf("Error: %s\n", err)
 		os.Exit(1)
 	}
 
 	var reader dbreader.DBReader
-	switch format {
-	case "json":
-		reader = dbreader.JSONReader{}
-	case "xml":
-		reader = dbreader.XMLReader{}
-	default:
-		fmt.Printf("Unsupported format: %s\n", format)
+	reader, err = dbreader.Invert(reader, filename)
+	if err != nil {
+		fmt.Printf("Error: %s\n", err)
 		os.Exit(1)
 	}
 
@@ -32,8 +28,7 @@ func main() {
 		return
 	}
 
-	format = file.InvertFormat(format)
-	if err := dbreader.PrintRecipes(recipes, format); err != nil {
+	if err := dbreader.PrintRecipes(recipes, filename); err != nil {
 		fmt.Println("Error printing recipes:", err)
 	}
 }

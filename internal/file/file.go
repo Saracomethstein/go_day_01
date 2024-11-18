@@ -8,23 +8,19 @@ import (
 	"strings"
 )
 
-func GetInfo() (string, string, error) {
+func GetInfo() (string, error) {
 	filename := flag.String("f", "", "path to the data base file")
 	flag.Parse()
 
 	if *filename == "" {
-		return "", "", fmt.Errorf("please provide a file path with -f flag")
+		return "", fmt.Errorf("please provide a file path with -f flag")
 	}
 
 	if _, err := os.Stat(*filename); os.IsNotExist(err) {
-		return "", "", fmt.Errorf("file dose not exist: %s", *filename)
+		return "", fmt.Errorf("file dose not exist: %s", *filename)
 	}
 
-	format, err := getFormat(*filename)
-	if err != nil {
-		return "", "", err
-	}
-	return *filename, format, nil
+	return *filename, nil
 }
 
 func ParseToCompare() (string, string, error) {
@@ -47,7 +43,7 @@ func ParseToCompare() (string, string, error) {
 	return *oldFile, *newFile, nil
 }
 
-func getFormat(filename string) (string, error) {
+func GetFormat(filename string) (string, error) {
 	ext := strings.ToLower(filepath.Ext(filename))
 	switch ext {
 	case ".json":
@@ -57,11 +53,4 @@ func getFormat(filename string) (string, error) {
 	default:
 		return "", fmt.Errorf("unknown file format: %s", ext)
 	}
-}
-
-func InvertFormat(format string) string {
-	if format == "json" {
-		return "xml"
-	}
-	return "json"
 }

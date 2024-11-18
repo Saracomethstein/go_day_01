@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
+	"github.com/Saracomethstein/go_day_01/internal/file"
 	"os"
 )
 
@@ -57,18 +58,27 @@ func (r XMLReader) Read(filename string) ([]Recipe, error) {
 	var recipeFile RecipeFile
 	err = xml.NewDecoder(f).Decode(&recipeFile)
 
+	if err != nil {
+		return nil, err
+	}
+
 	return recipeFile.Cakes, err
 }
 
-func PrintRecipes(recipes []Recipe, format string) error {
+func PrintRecipes(recipes []Recipe, filename string) error {
 	var output []byte
 	var err error
 
+	format, err := file.GetFormat(filename)
+	if err != nil {
+		return err
+	}
+
 	recipeFile := RecipeFile{Cakes: recipes}
 	if format == "json" {
-		output, err = json.MarshalIndent(recipeFile, "", "    ")
-	} else if format == "xml" {
 		output, err = xml.MarshalIndent(recipeFile, "", "    ")
+	} else if format == "xml" {
+		output, err = json.MarshalIndent(recipeFile, "", "    ")
 	}
 
 	if err != nil {
@@ -77,4 +87,21 @@ func PrintRecipes(recipes []Recipe, format string) error {
 
 	fmt.Println(string(output))
 	return nil
+}
+
+func Invert(reader DBReader, filename string) (DBReader, error) {
+	format, err := file.GetFormat(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	switch format {
+	case "json":
+		reader = JSONReader{}
+	case "xml":
+		reader = XMLReader{}
+	default:
+		return nil, fmt.Errorf("unsupported format: %s", format)
+	}
+	return reader, nil
 }

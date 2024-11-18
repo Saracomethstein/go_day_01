@@ -48,14 +48,14 @@ func (r JSONReader) Read(filename string) ([]Recipe, error) {
 }
 
 func (r XMLReader) Read(filename string) ([]Recipe, error) {
-	file, err := os.Open(filename)
+	f, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
-	defer file.Close()
+	defer f.Close()
 
 	var recipeFile RecipeFile
-	err = xml.NewDecoder(file).Decode(&recipeFile)
+	err = xml.NewDecoder(f).Decode(&recipeFile)
 
 	return recipeFile.Cakes, err
 }

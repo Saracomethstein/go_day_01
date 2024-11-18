@@ -11,24 +11,25 @@ import (
 func main() {
 	filename, err := file.GetInfo()
 	if err != nil {
-		fmt.Printf("Error: %s\n", err)
-		os.Exit(1)
+		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+		return
 	}
 
 	var reader dbreader.DBReader
 	reader, err = dbreader.Invert(reader, filename)
 	if err != nil {
-		fmt.Printf("Error: %s\n", err)
-		os.Exit(1)
+		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+		return
 	}
 
 	recipes, err := reader.Read(filename)
 	if err != nil {
-		fmt.Println("Error reading file:", err)
+		fmt.Fprintf(os.Stderr, "Error reading file: %s\n", err)
 		return
 	}
 
 	if err := dbreader.PrintRecipes(recipes, filename); err != nil {
-		fmt.Println("Error printing recipes:", err)
+		fmt.Fprintf(os.Stderr, "Error printing recipes: %s\n", err)
+		return
 	}
 }

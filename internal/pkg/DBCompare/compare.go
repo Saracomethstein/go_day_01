@@ -2,7 +2,7 @@ package dbcompare
 
 import (
 	"fmt"
-	dbreader "github.com/Saracomethstein/go_day_01/internal/DBReader"
+	dbreader "github.com/Saracomethstein/go_day_01/internal/pkg/DBReader"
 )
 
 func CompareDatabases(oldRecipes, newRecipes []dbreader.Recipe) {

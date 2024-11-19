@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
-	"github.com/Saracomethstein/go_day_01/internal/file"
+	"github.com/Saracomethstein/go_day_01/internal/go_day_01/fileutil"
 	"os"
 )
 
@@ -69,7 +69,7 @@ func PrintRecipes(recipes []Recipe, filename string) error {
 	var output []byte
 	var err error
 
-	format, err := file.GetFormat(filename)
+	format, err := fileutil.GetFormat(filename)
 	if err != nil {
 		return err
 	}
@@ -90,7 +90,7 @@ func PrintRecipes(recipes []Recipe, filename string) error {
 }
 
 func Invert(reader DBReader, filename string) (DBReader, error) {
-	format, err := file.GetFormat(filename)
+	format, err := fileutil.GetFormat(filename)
 	if err != nil {
 		return nil, err
 	}

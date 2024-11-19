@@ -2,14 +2,13 @@ package main
 
 import (
 	"fmt"
+	"github.com/Saracomethstein/go_day_01/internal/go_day_01/fileutil"
+	dbreader "github.com/Saracomethstein/go_day_01/internal/pkg/DBReader"
 	"os"
-
-	dbreader "github.com/Saracomethstein/go_day_01/internal/DBReader"
-	file "github.com/Saracomethstein/go_day_01/internal/file"
 )
 
 func main() {
-	filename, err := file.GetInfo()
+	filename, err := fileutil.GetInfo()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 		return

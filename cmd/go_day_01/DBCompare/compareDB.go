@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	dbcompare "github.com/Saracomethstein/go_day_01/internal/DBCompare"
-	dbreader "github.com/Saracomethstein/go_day_01/internal/DBReader"
-	"github.com/Saracomethstein/go_day_01/internal/file"
+	"github.com/Saracomethstein/go_day_01/internal/go_day_01/fileutil"
+	dbcompare "github.com/Saracomethstein/go_day_01/internal/pkg/DBCompare"
+	dbreader "github.com/Saracomethstein/go_day_01/internal/pkg/DBReader"
 	"os"
 )
 
 func main() {
-	oldFile, newFile, err := file.ParseToCompare()
+	oldFile, newFile, err := fileutil.ParseToCompare()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 		return

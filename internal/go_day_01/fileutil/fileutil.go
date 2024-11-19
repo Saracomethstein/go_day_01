@@ -40,6 +40,10 @@ func ParseToCompare() (string, string, error) {
 		return "", "", fmt.Errorf("new file dose not exist: %s", *newFile)
 	}
 
+	if oldFile == newFile {
+		return "", "", fmt.Errorf("file duplicates: %s and %s", *oldFile, *newFile)
+	}
+
 	return *oldFile, *newFile, nil
 }
 

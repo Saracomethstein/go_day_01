@@ -1,58 +1,28 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
+	"github.com/Saracomethstein/go_day_01/internal/go_day_01/fileutil"
+	fscompare "github.com/Saracomethstein/go_day_01/internal/pkg/FSCompare"
 	"os"
 )
 
-// test version //
 func main() {
-	oldFile := "snapshot1.txt"
-	newFile := "snapshot2.txt"
-
-	oldSet, err := loadFileToSet(oldFile)
+	oldFile, newFile, err := fileutil.ParseToCompare()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error reading %s: %s\n", oldFile, err)
+		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 		return
 	}
 
-	newSet, err := loadFileToSet(newFile)
+	oldSet, err := fscompare.LoadFile(oldFile)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error reading %s: %s\n", newFile, err)
-		return
+		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 	}
 
-	for file := range newSet {
-		if !oldSet[file] {
-			fmt.Printf("ADDED %s\n", file)
-		}
-	}
-
-	// Find removed files
-	for file := range oldSet {
-		if !newSet[file] {
-			fmt.Printf("REMOVED %s\n", file)
-		}
-	}
-}
-
-func loadFileToSet(filename string) (map[string]bool, error) {
-	file, err := os.Open(filename)
+	newSet, err := fscompare.LoadFile(newFile)
 	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	set := make(map[string]bool)
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		set[scanner.Text()] = true
+		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 	}
 
-	if err := scanner.Err(); err != nil {
-		return nil, err
-	}
-
-	return set, nil
+	fscompare.Compare(oldSet, newSet)
 }

@@ -36,7 +36,10 @@ func (r JSONReader) Read(filename string) ([]Recipe, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer file.Close()
+
+	defer func(file *os.File) {
+		_ = file.Close()
+	}(file)
 
 	var recipeFile RecipeFile
 	err = json.NewDecoder(file).Decode(&recipeFile)
@@ -53,7 +56,10 @@ func (r XMLReader) Read(filename string) ([]Recipe, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer f.Close()
+
+	defer func(f *os.File) {
+		_ = f.Close()
+	}(f)
 
 	var recipeFile RecipeFile
 	err = xml.NewDecoder(f).Decode(&recipeFile)

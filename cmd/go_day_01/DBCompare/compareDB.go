@@ -1,40 +1,29 @@
 package main
 
 import (
-	"fmt"
 	"github.com/Saracomethstein/go_day_01/internal/go_day_01/fileutil"
+	"github.com/Saracomethstein/go_day_01/internal/go_day_01/handling"
+	"github.com/Saracomethstein/go_day_01/internal/go_day_01/read"
 	dbcompare "github.com/Saracomethstein/go_day_01/internal/pkg/DBCompare"
 	dbreader "github.com/Saracomethstein/go_day_01/internal/pkg/DBReader"
-	"os"
 )
 
 func main() {
 	oldFile, newFile, err := fileutil.ParseToCompare()
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+		handling.Error(err)
 		return
 	}
 	var reader dbreader.DBReader
-
-	reader, err = dbreader.Invert(reader, oldFile)
+	oldRecipe, err := read.Read(reader, oldFile)
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "Error: %s\n", err)
-		return
-	}
-	oldRecipe, err := reader.Read(oldFile)
-	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+		handling.Error(err)
 		return
 	}
 
-	reader, err = dbreader.Invert(reader, newFile)
+	newRecipe, err := read.Read(reader, newFile)
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "Error: %s\n", err)
-		return
-	}
-	newRecipe, err := reader.Read(newFile)
-	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+		handling.Error(err)
 		return
 	}
 

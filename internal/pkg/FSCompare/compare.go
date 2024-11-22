@@ -12,7 +12,9 @@ func LoadFile(filename string) (map[string]bool, error) {
 		return nil, err
 	}
 
-	defer file.Close()
+	defer func(file *os.File) {
+		_ = file.Close()
+	}(file)
 
 	set := make(map[string]bool)
 	scanner := bufio.NewScanner(file)

@@ -1,34 +1,28 @@
 package main
 
 import (
-	"fmt"
 	"github.com/Saracomethstein/go_day_01/internal/go_day_01/fileutil"
+	"github.com/Saracomethstein/go_day_01/internal/go_day_01/handling"
+	"github.com/Saracomethstein/go_day_01/internal/go_day_01/read"
 	dbreader "github.com/Saracomethstein/go_day_01/internal/pkg/DBReader"
-	"os"
 )
 
 func main() {
 	filename, err := fileutil.GetInfo()
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+		handling.Error(err)
 		return
 	}
 
 	var reader dbreader.DBReader
-	reader, err = dbreader.Invert(reader, filename)
+	recipes, err := read.Read(reader, filename)
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "Error: %s\n", err)
-		return
-	}
-
-	recipes, err := reader.Read(filename)
-	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "Error reading file: %s\n", err)
+		handling.Error(err)
 		return
 	}
 
 	if err := dbreader.PrintRecipes(recipes, filename); err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "Error printing recipes: %s\n", err)
+		handling.Error(err)
 		return
 	}
 }

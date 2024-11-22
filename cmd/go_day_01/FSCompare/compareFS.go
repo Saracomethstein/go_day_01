@@ -10,18 +10,20 @@ import (
 func main() {
 	oldFile, newFile, err := fileutil.ParseToCompare()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+		_, _ = fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 		return
 	}
 
 	oldSet, err := fscompare.LoadFile(oldFile)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+		_, _ = fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+		return
 	}
 
 	newSet, err := fscompare.LoadFile(newFile)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+		_, _ = fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+		return
 	}
 
 	fscompare.Compare(oldSet, newSet)
